@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using Czf.Repository.Contracts;
+using Czf.Repository.Contracts.Enum;
 using Microsoft.Extensions.Options;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Sdk.Sfc;
@@ -92,6 +93,62 @@ namespace Czf.Repository.DatabaseInfo.Smo
             public TableInfo(Table table)
             {
                 _table = table;
+            }
+            public string Name { get => _table.Name; }
+
+        }
+
+        private class TableColumnInfo : ITableColumnInfo
+        {
+            private readonly Column _column;
+            public TableColumnInfo(Column column)
+            {
+                _column = column;
+            }
+            public string Name { get => _column.Name; }
+            public bool Nullable { get => _column.Nullable; }
+            public bool InPrimaryKey { get => _column.InPrimaryKey; }
+            public bool Computed { get => _column.Computed; }
+            public ColumnDataType ColumnDataType
+            {
+                get
+                {
+                    ColumnDataType result =
+                        (ColumnDataType)_column.DataType.SqlDataType;
+
+                    if (result == ColumnDataType.None)
+                    {
+                        throw new Exception("unrecognized SqlDataType");
+                    }
+                    return result;
+                }
+            }
+        }
+        private class TableColumnInfoCollection : ITableColumnInfoCollection
+        {
+            private readonly ColumnCollection _columnCollection;
+            public TableColumnInfoCollection(ColumnCollection columnCollection)
+            {
+                _columnCollection = columnCollection;
+            }
+            public ITableColumnInfo this[int index] => new TableColumnInfo(_columnCollection[index]);
+
+            public ITableColumnInfo this[string name] => new TableColumnInfo(_columnCollection[name]);
+
+            public int Count => _columnCollection.Count;
+
+            public bool IsSynchronized => _columnCollection.IsSynchronized;
+
+            public object SyncRoot => _columnCollection.SyncRoot;
+
+            public void CopyTo(Array array, int index)
+            {
+                throw new NotImplementedException();
+            }
+
+            public IEnumerator GetEnumerator()
+            {
+                throw new NotImplementedException();
             }
         }
     }

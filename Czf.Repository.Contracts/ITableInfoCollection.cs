@@ -6,8 +6,6 @@ namespace Czf.Repository.Contracts
     {
         ITableInfo this[int index] { get; }
         ITableInfo this[string name] { get; }
-        ITableInfo this[string name, string schema] { get; }        
-
-
+        ITableInfo this[string name, string schema] { get; }
     }
 }

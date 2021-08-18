@@ -95,7 +95,90 @@ namespace Czf.Repository.DatabaseInfo.Smo
                 _table = table;
             }
             public string Name { get => _table.Name; }
+            public IForeignKeyInfoCollection ForeignKeys { get => new ForeignKeyInfoCollection(_table.ForeignKeys); }
+        }
 
+        private class ForeignKeyInfo : IForeignKeyInfo
+        {
+            private readonly ForeignKey _foreignKey;
+            public ForeignKeyInfo(ForeignKey foreignKey)
+            {
+                _foreignKey = foreignKey;
+            }
+
+            public string ReferencedKey => _foreignKey.ReferencedKey;
+
+            public string ReferencedTable => _foreignKey.ReferencedTable;
+
+            public string ReferencedTableSchema => _foreignKey.ReferencedTableSchema;
+
+            public IForeignKeyColumnInfoCollection Columns => throw new NotImplementedException();
+        }
+
+        private class ForeignKeyColumnInfoCollection : IForeignKeyColumnInfoCollection
+        {
+            private readonly ForeignKeyColumnCollection _foreignKeyColumnCollection;
+            public ForeignKeyColumnInfoCollection(ForeignKeyColumnCollection foreignKeyColumnCollection)
+            {
+                _foreignKeyColumnCollection = foreignKeyColumnCollection;
+            }
+            public IForeignKeyColumnInfo this[int index] => new ForeignKeyColumnInfo(_foreignKeyColumnCollection[index]);
+
+            public IForeignKeyColumnInfo this[string name] => new ForeignKeyColumnInfo(_foreignKeyColumnCollection[name]);
+
+            public int Count => _foreignKeyColumnCollection.Count;
+
+            public bool IsSynchronized => _foreignKeyColumnCollection.IsSynchronized;
+
+            public object SyncRoot => _foreignKeyColumnCollection.SyncRoot;
+
+            public void CopyTo(Array array, int index)
+            {
+                throw new NotImplementedException();
+            }
+
+            public IEnumerator GetEnumerator()
+            {
+                throw new NotImplementedException();
+            }
+        }
+        public class ForeignKeyColumnInfo : IForeignKeyColumnInfo 
+        {
+            private readonly ForeignKeyColumn _foreignKeyColumn;
+
+            public ForeignKeyColumnInfo(ForeignKeyColumn foreignKeyColumn)
+            {
+                _foreignKeyColumn = foreignKeyColumn;
+            }
+        }
+
+        private class ForeignKeyInfoCollection : IForeignKeyInfoCollection
+        {
+            private ForeignKeyCollection _foreignKeyCollection;
+            public ForeignKeyInfoCollection(ForeignKeyCollection foreignKeyCollection)
+            {
+                _foreignKeyCollection = foreignKeyCollection;
+            }
+
+            public IForeignKeyInfo this[int index] => new ForeignKeyInfo(_foreignKeyCollection[index]);
+
+            public IForeignKeyInfo this[string name] => new ForeignKeyInfo(_foreignKeyCollection[name]);
+
+            public int Count => _foreignKeyCollection.Count;
+
+            public bool IsSynchronized => _foreignKeyCollection.IsSynchronized;
+
+            public object SyncRoot => _foreignKeyCollection.SyncRoot;
+
+            public void CopyTo(Array array, int index)
+            {
+                throw new NotImplementedException();
+            }
+
+            public IEnumerator GetEnumerator()
+            {
+                throw new NotImplementedException();
+            }
         }
 
         private class TableColumnInfo : ITableColumnInfo

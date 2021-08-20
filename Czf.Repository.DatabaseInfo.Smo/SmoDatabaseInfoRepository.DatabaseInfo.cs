@@ -17,10 +17,12 @@ namespace Czf.Repository.DatabaseInfo.Smo
             {
                 _database = database;
             }
-            public ITableInfoCollection TableInfos
+            public ITableInfoCollection Tables
             {
                 get => new TableInfoCollection(_database.Tables);
             }
+
+            public string Name { get => _database.Name; }
         }
     }
 }

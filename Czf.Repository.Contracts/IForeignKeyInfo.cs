@@ -8,10 +8,12 @@ namespace Czf.Repository.Contracts
 {
     public interface IForeignKeyInfo
     {
+        ITableInfo Parent { get; }
+        string Name { get; }
         string ReferencedKey { get;}        
         string ReferencedTable { get;}
         string ReferencedTableSchema { get; }
-        public IForeignKeyColumnInfoCollection Columns { get; }
+        IForeignKeyColumnInfoCollection Columns { get; }
     
     }
 }

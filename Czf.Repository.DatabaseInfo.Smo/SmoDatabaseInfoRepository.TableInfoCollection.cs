@@ -30,6 +30,7 @@ namespace Czf.Repository.DatabaseInfo.Smo
 
             public object SyncRoot => _tableCollection.SyncRoot;
 
+            public IDatabaseInfo Parent => new DatabaseInfo(_tableCollection.Parent);
 
             void ICollection.CopyTo(Array array, int index)
             {

@@ -9,6 +9,7 @@ namespace Czf.Repository.Contracts
 {
     public interface IForeignKeyColumnInfoCollection : ICollection, IEnumerable
     {
+        IForeignKeyInfo Parent { get; }
         IForeignKeyColumnInfo this[int index] { get; }
         IForeignKeyColumnInfo this[string name] { get; }
     }

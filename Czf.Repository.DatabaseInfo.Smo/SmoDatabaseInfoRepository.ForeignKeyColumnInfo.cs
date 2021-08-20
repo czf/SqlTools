@@ -13,6 +13,12 @@ namespace Czf.Repository.DatabaseInfo.Smo
             {
                 _foreignKeyColumn = foreignKeyColumn;
             }
+
+            public IForeignKeyInfo Parent => new ForeignKeyInfo(_foreignKeyColumn.Parent);
+
+            public string Name => _foreignKeyColumn.Name;
+
+            public string ReferencedColumn => _foreignKeyColumn.ReferencedColumn;
         }
     }
 

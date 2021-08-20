@@ -25,6 +25,8 @@ namespace Czf.Repository.DatabaseInfo.Smo
 
             public object SyncRoot => _foreignKeyCollection.SyncRoot;
 
+            public ITableInfo Parent => new TableInfo(_foreignKeyCollection.Parent);
+
             public void CopyTo(Array array, int index)
             {
                 throw new NotImplementedException();

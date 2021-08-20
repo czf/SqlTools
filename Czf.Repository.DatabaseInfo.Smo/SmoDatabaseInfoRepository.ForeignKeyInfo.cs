@@ -20,7 +20,11 @@ namespace Czf.Repository.DatabaseInfo.Smo
 
             public string ReferencedTableSchema => _foreignKey.ReferencedTableSchema;
 
-            public IForeignKeyColumnInfoCollection Columns => throw new NotImplementedException();
+            public IForeignKeyColumnInfoCollection Columns => new ForeignKeyColumnInfoCollection(_foreignKey.Columns);
+
+            public ITableInfo Parent => new TableInfo(_foreignKey.Parent);
+
+            public string Name => _foreignKey.Name;
         }
     }
 

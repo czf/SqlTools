@@ -2,6 +2,7 @@
 {
     public interface IDatabaseInfo 
     {
-        ITableInfoCollection TableInfos { get; }
+        ITableInfoCollection Tables { get; }
+        string Name { get; }
     }
 }

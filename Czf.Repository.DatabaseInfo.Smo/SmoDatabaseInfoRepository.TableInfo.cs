@@ -9,7 +9,7 @@ using Microsoft.SqlServer.Management.Smo;
 
 namespace Czf.Repository.DatabaseInfo.Smo
 {
-    public partial class SmoDatabaseInfoRepository : IDatabaseInfoRepository
+    public partial class SmoDatabaseInfoRepository
     {
         private class TableInfo : ITableInfo
         {
@@ -19,7 +19,10 @@ namespace Czf.Repository.DatabaseInfo.Smo
                 _table = table;
             }
             public string Name { get => _table.Name; }
+            public string Schema { get => _table.Schema; }
+            public ITableColumnInfoCollection Columns{ get => new TableColumnInfoCollection(_table.Columns); }
             public IForeignKeyInfoCollection ForeignKeys { get => new ForeignKeyInfoCollection(_table.ForeignKeys); }
+            public IDatabaseInfo Parent { get => new DatabaseInfo(_table.Parent); }
         }
 
     }

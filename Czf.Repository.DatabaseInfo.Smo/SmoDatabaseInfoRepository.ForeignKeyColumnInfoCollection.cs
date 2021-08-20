@@ -24,6 +24,8 @@ namespace Czf.Repository.DatabaseInfo.Smo
 
             public object SyncRoot => _foreignKeyColumnCollection.SyncRoot;
 
+            public IForeignKeyInfo Parent => new ForeignKeyInfo(_foreignKeyColumnCollection.Parent);
+
             public void CopyTo(Array array, int index)
             {
                 throw new NotImplementedException();

@@ -14,6 +14,7 @@ namespace Czf.Repository.DatabaseInfo.Smo
             {
                 _column = column;
             }
+            
             public string Name { get => _column.Name; }
             public bool Nullable { get => _column.Nullable; }
             public bool InPrimaryKey { get => _column.InPrimaryKey; }

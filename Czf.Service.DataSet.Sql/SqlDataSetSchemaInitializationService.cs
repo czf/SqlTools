@@ -7,23 +7,28 @@ using Microsoft.Extensions.Options;
 using System.Data.SqlClient;
 using System.Text;
 using System.Collections.Generic;
+using QuikGraph.Data;
+using QuikGraph.Algorithms;
+using System.Diagnostics;
 
 namespace Czf.Service.DataSetOperations.Sql
 {
     public class SqlDataSetSchemaInitializationService : IDataSetSchemaInitializationService
     {
+        private readonly IDataAdapterFactory _dataAdapterFactory;
         private readonly SqlConnection _sqlConnection;
         private readonly bool _exclude;
 
-        public SqlDataSetSchemaInitializationService(IOptions<SqlDataSetSchemaInitializationServiceOptions> options)
+        public SqlDataSetSchemaInitializationService(IOptions<SqlDataSetSchemaInitializationServiceOptions> options, IDataAdapterFactory dataAdapterFactory)
         {
             string connectionString = options.Value.ConnectionString;
             _sqlConnection = new SqlConnection(connectionString);
             _exclude = options.Value.Exclude;
+            _dataAdapterFactory = dataAdapterFactory;
         }
         public DataSet InitializeTableColumnsDataSet(IDatabaseInfo databaseInfo, CancellationToken stoppingToken)
         {
-            DataSet d = new DataSet();
+            DataSet result = new DataSet();
             StringBuilder stringBuilder = new StringBuilder();
             
             List<string> tableNames = new List<string>(databaseInfo.Tables.Count);
@@ -34,16 +39,16 @@ namespace Czf.Service.DataSetOperations.Sql
                 tableNames.Add(table.Name);
                 
             }
-            SqlDataAdapter dataAdapter = new SqlDataAdapter(stringBuilder.ToString(), _sqlConnection);
-            dataAdapter.FillSchema(d, SchemaType.Source);
-            dataAdapter.Fill(d);
+            IDataAdapter dataAdapter = _dataAdapterFactory.CreateIDataAdapter(stringBuilder.ToString(), _sqlConnection); //new SqlDataAdapter(stringBuilder.ToString(), _sqlConnection);
+            dataAdapter.FillSchema(result, SchemaType.Source);
+            dataAdapter.Fill(result);
 
             for (int a = 0; a < tableNames.Count && !stoppingToken.IsCancellationRequested; a++)
             {
-                d.Tables[a].TableName = tableNames[a];
+                result.Tables[a].TableName = tableNames[a];
             }
 
-            return d;
+            return result;
         }
 
         /// <summary>
@@ -100,7 +105,7 @@ namespace Czf.Service.DataSetOperations.Sql
                     {
                         isSameColumn = true;
                         sameColumnForeignKeyNames.Add(fk.Name);
-                        Console.WriteLine(fk.Name);
+                        Debug.WriteLine(fk.Name);
                         break;
                     }
                     if (fk.Parent.Name == fk.ReferencedTable && fk.Parent.Schema == fk.ReferencedTableSchema)

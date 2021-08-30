@@ -17,6 +17,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Czf.Service.DatabaseInfo.Da
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Czf.Service.DataSetOperations.Sql", "Czf.Service.DataSet.Sql\Czf.Service.DataSetOperations.Sql.csproj", "{255C6FDD-81CC-499F-8FBB-9049A9F27273}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0970D728-A697-48FF-B589-9DFAC1E0BD23}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Czf.Service.DataSetOperations.Sql.Tests", "tests\Czf.Service.DataSetOperations.Sql.Tests\Czf.Service.DataSetOperations.Sql.Tests.csproj", "{72A3011C-D0F2-4749-AAA3-80F615B03D2C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,9 +55,16 @@ Global
 		{255C6FDD-81CC-499F-8FBB-9049A9F27273}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{255C6FDD-81CC-499F-8FBB-9049A9F27273}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{255C6FDD-81CC-499F-8FBB-9049A9F27273}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72A3011C-D0F2-4749-AAA3-80F615B03D2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72A3011C-D0F2-4749-AAA3-80F615B03D2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72A3011C-D0F2-4749-AAA3-80F615B03D2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72A3011C-D0F2-4749-AAA3-80F615B03D2C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{72A3011C-D0F2-4749-AAA3-80F615B03D2C} = {0970D728-A697-48FF-B589-9DFAC1E0BD23}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {474BBE01-1F20-4320-AAE2-AA247E040E50}

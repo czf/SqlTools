@@ -18,15 +18,11 @@ namespace Czf.Service.DatabaseInfo.DataSetBuilder
         }
         public DataSet CreateDataSet(IDatabaseInfo databaseInfo, CancellationToken stoppingToken)
         {
-            IDataSetSchemaInitializationService initservice = null;
-            var ds = initservice.InitializeTableColumnsDataSet(databaseInfo, stoppingToken);
-            initservice.
-
-            DataSet d = _dataSetSchemaInitializationService.InitializeTableColumnsDataSet(databaseInfo, stoppingToken);
+            DataSet result = _dataSetSchemaInitializationService.InitializeTableColumnsDataSet(databaseInfo, stoppingToken);
             List<IForeignKeyInfo> foreignKeys = new List<IForeignKeyInfo>();
             List<string> tableNames = new List<string>(databaseInfo.Tables.Count);
             StringBuilder stringBuilder = new StringBuilder();
-            
+
             for (int a = 0; a < databaseInfo.Tables.Count && !stoppingToken.IsCancellationRequested; a++)
             {
                 ITableInfo table = databaseInfo.Tables[a];
@@ -39,8 +35,8 @@ namespace Czf.Service.DatabaseInfo.DataSetBuilder
 
                 }
 
-
-                return d;
+            }
+            return result;
         }
     }
 }

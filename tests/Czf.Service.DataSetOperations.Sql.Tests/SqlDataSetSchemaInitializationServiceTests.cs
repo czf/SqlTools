@@ -74,7 +74,7 @@ namespace Czf.Service.DataSetOperations.Sql.Tests
 
 
         [Test]
-        public void InitializeTableForeignKeysForAcyclicGraph_Test()
+        public void InitializeTableForeignKeysForAcyclicGraph_TestWithTwoTables()
         {
             //Arrange 
             DataSet dataSet = new DataSet();
@@ -83,15 +83,25 @@ namespace Czf.Service.DataSetOperations.Sql.Tests
             var primaryTable = CreateSubstituteTableInfo("pk");
             var foreignTable = CreateSubstituteTableInfo("fk");
 
+
+            var foreignKeyColumnInfo1 = CreateForeignKeyColumnInfo("fkcolumnInfoName", "primaryTableId");
+            var foreignKeyColumnInfoCollection = CreateForeignKeyColumnInfoCollection(foreignKeyColumnInfo1);
+
             _databaseInfo.Tables.Count.Returns(2);
             _databaseInfo.Tables[0].Returns(primaryTable);
             _databaseInfo.Tables[1].Returns(foreignTable);
 
-            dataSet.Tables.Add(new DataTable("pk"));
-            dataSet.Tables.Add(new DataTable("fk"));
+            var pkTable = new DataTable("pk");
+            pkTable.Columns.Add(new DataColumn("primaryTableId"));
+            pkTable.Columns["primaryTableId"].AllowDBNull = false;
+            var fkTable = new DataTable("fk");
+            fkTable.Columns.Add(new DataColumn("fkcolumnInfoName"));
+            fkTable.Columns["fkcolumnInfoName"].AllowDBNull = false;    
+            dataSet.Tables.Add(pkTable);
+            dataSet.Tables.Add(fkTable);
 
             foreignTable.ForeignKeys.Count.Returns(1);
-            var foreignKey = CreateSubstituteForeignKeyInfo("FKTest","primaryTableId",  "pk", foreignTable);
+            var foreignKey = CreateSubstituteForeignKeyInfo("FKTest","primaryTableId",  "pk", foreignTable, foreignKeyColumnInfoCollection);
             foreignTable.ForeignKeys[0].Returns(foreignKey);
 
             //Act
@@ -106,13 +116,34 @@ namespace Czf.Service.DataSetOperations.Sql.Tests
             //Assert
             ForeignKeyConstraint foreignKeyConstraintResult = (ForeignKeyConstraint)dataSet.Tables["fk"].Constraints[0];
             Assert.NotNull(foreignKeyConstraintResult);
+            CollectionAssert.IsNotEmpty(foreignKeyConstraintResult.Columns);
+            Assert.That(foreignKeyConstraintResult.Columns, Has.Length.EqualTo(1));
+            Assert.AreEqual(foreignKeyConstraintResult.ConstraintName, "FKTest");
+
+            CollectionAssert.IsEmpty(nullableTargetColumnForeignKeyConstraints);
+            CollectionAssert.IsEmpty(sameTableTargetColumnForeignKeyConstraints);
+            CollectionAssert.IsEmpty(duplicateConstraints);
+
         }
+
+
+
+
+
 
 
         private ITableInfo CreateSubstituteTableInfo(string tableName)
         {
             ITableInfo result = Substitute.For<ITableInfo>();
             result.Name.Returns(x =>tableName );
+            return result;
+        }
+
+        private IForeignKeyColumnInfo CreateForeignKeyColumnInfo(string name, string referencedColumn)
+        {
+            IForeignKeyColumnInfo result = Substitute.For<IForeignKeyColumnInfo>();
+            result.Name.Returns(x => name);
+            result.ReferencedColumn.Returns(x => referencedColumn);
             return result;
         }
 
@@ -137,7 +168,11 @@ namespace Czf.Service.DataSetOperations.Sql.Tests
         {
             IForeignKeyColumnInfoCollection result = Substitute.For<IForeignKeyColumnInfoCollection>();
             result.Count.Returns(columns.Length);
-            
+            for(int a = 0; a<columns.Length; a++)
+            {
+                result[a].Returns(columns[a]);
+                result[columns[a].Name].Returns(columns[a]);
+            }
             return result;
         }
     }

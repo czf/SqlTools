@@ -264,12 +264,74 @@ namespace Czf.Service.DataSetOperations.Sql.Tests
         }
 
 
+        [Test]
+        public void InitializeTableForeignKeysForAcyclicGraph_TestWithTwoTables4()
+        {
+            //Arrange 
+            DataSet dataSet = new DataSet();
 
 
-        private ITableInfo CreateSubstituteTableInfo(string tableName)
+            var primaryTable = CreateSubstituteTableInfo("pk");
+            var foreignTable = CreateSubstituteTableInfo("fk");
+
+
+            var foreignKeyColumnInfo1 = CreateForeignKeyColumnInfo("fkcolumnInfoName2", "fkcolumnInfoName");
+            var foreignKeyColumnInfoCollection = CreateForeignKeyColumnInfoCollection(foreignKeyColumnInfo1);
+
+            _databaseInfo.Tables.Count.Returns(2);
+            _databaseInfo.Tables[0].Returns(primaryTable);
+            _databaseInfo.Tables[1].Returns(foreignTable);
+
+            var pkTable = new DataTable("pk");
+            pkTable.Columns.Add(new DataColumn("primaryTableId"));
+            pkTable.Columns["primaryTableId"].AllowDBNull = false;
+            var fkTable = new DataTable("fk");
+            fkTable.Columns.Add(new DataColumn("fkcolumnInfoName"));
+            fkTable.Columns.Add(new DataColumn("fkcolumnInfoName2"));
+            fkTable.Columns["fkcolumnInfoName"].AllowDBNull = false;
+            fkTable.Columns["fkcolumnInfoName2"].AllowDBNull = true;
+            dataSet.Tables.Add(pkTable);
+            dataSet.Tables.Add(fkTable);
+
+            foreignTable.ForeignKeys.Count.Returns(1);
+            var foreignKey = CreateSubstituteForeignKeyInfo("FKTest", "fkcolumnInfoName", "fk", foreignTable, foreignKeyColumnInfoCollection);
+            foreignTable.ForeignKeys[0].Returns(foreignKey);
+
+            //Act
+            _service.InitializeTableForeignKeysForAcyclicGraph(
+                _databaseInfo,
+                dataSet,
+                out List<(string ConstraintName1, string ConstraintName2)> duplicateConstraints,
+            out List<IForeignKeyInfo> nullableTargetColumnForeignKeyConstraints,
+            out List<IForeignKeyInfo> sameTableTargetColumnForeignKeyConstraints,
+            CancellationToken.None);
+
+            //Assert
+            ConstraintCollection foreignKeyConstraintCollection = dataSet.Tables["fk"]?.Constraints;
+            Assert.NotNull(foreignKeyConstraintCollection);
+            CollectionAssert.IsEmpty(foreignKeyConstraintCollection);
+
+            
+
+            CollectionAssert.IsEmpty(nullableTargetColumnForeignKeyConstraints);
+            Assert.That(sameTableTargetColumnForeignKeyConstraints, Has.One.Matches<IForeignKeyInfo>(x=>x.Name == "FKTest" &&
+                    x.ReferencedKey == "fkcolumnInfoName" &&
+                    x.ReferencedTable == "fk" &&
+                    x.ReferencedTableSchema == "dbo"));
+
+            CollectionAssert.IsNotEmpty(sameTableTargetColumnForeignKeyConstraints.First().Columns);
+            Assert.That(sameTableTargetColumnForeignKeyConstraints.First().Columns,
+                Has.One.Matches<IForeignKeyColumnInfo>(
+                    x => x.Name == "fkcolumnInfoName2" && x.ReferencedColumn == "fkcolumnInfoName"));
+
+            CollectionAssert.IsEmpty(duplicateConstraints);
+        }
+
+        private ITableInfo CreateSubstituteTableInfo(string tableName, string schema ="dbo")
         {
             ITableInfo result = Substitute.For<ITableInfo>();
             result.Name.Returns(x =>tableName );
+            result.Schema.Returns(x => schema);
             return result;
         }
 

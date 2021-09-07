@@ -8,6 +8,22 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.SqlServer.Types" Version="14.0.1016.290" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Czf.Repository.Contracts\Czf.Repository.Contracts.csproj" />
+    <ProjectReference Include="..\Czf.Repository.DatabaseInfo.Smo\Czf.Repository.DatabaseInfo.Smo.csproj" />
+    <ProjectReference Include="..\Czf.Service.Contracts\Czf.Service.Contracts.csproj" />
+    <ProjectReference Include="..\Czf.Service.DatabaseInfo.DataSetBuilder\Czf.Service.DatabaseInfo.DataSetBuilder.csproj" />
+    <ProjectReference Include="..\Czf.Service.DataSet.Sql\Czf.Service.DataSetOperations.Sql.csproj" />
+    <ProjectReference Include="..\Czf.Service.DependencySortService\Czf.Service.DependencySortService.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

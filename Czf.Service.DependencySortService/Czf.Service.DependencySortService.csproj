@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="QuikGraph.Data" Version="2.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Czf.Service.Contracts\Czf.Service.Contracts.csproj" />
   </ItemGroup>
 

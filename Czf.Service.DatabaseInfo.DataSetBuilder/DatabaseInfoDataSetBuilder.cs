@@ -36,6 +36,9 @@ namespace Czf.Service.DatabaseInfo.DataSetBuilder
                 }
 
             }
+
+            _dataSetSchemaInitializationService.InitializeTableForeignKeysForAcyclicGraph(databaseInfo, result,
+                out _, out _, out _, stoppingToken);
             return result;
         }
     }

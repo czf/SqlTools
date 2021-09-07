@@ -35,7 +35,7 @@ namespace Czf.Service.DataSetOperations.Sql
             for (int a = 0; a < databaseInfo.Tables.Count && !stoppingToken.IsCancellationRequested; a++)
             {
                 ITableInfo table = databaseInfo.Tables[a];
-                stringBuilder.AppendLine($"Select top(0) * from [{table.Name}]");
+                stringBuilder.AppendLine($"Select top(0) * from [{table.Schema}].[{table.Name}]");
                 tableNames.Add(table.Name);
                 
             }
@@ -157,6 +157,7 @@ namespace Czf.Service.DataSetOperations.Sql
 
         public class SqlDataSetSchemaInitializationServiceOptions
         {
+            public const string SqlDataSetSchemaInitializationServiceOptionsKey = "SqlDataSetSchemaInitializationService";
             public string ConnectionString { get; set; }
             public bool Exclude { get; set; }
         }
